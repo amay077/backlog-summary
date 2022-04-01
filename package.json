@@ -18,6 +18,12 @@
     "@angular/platform-browser": "~13.3.0",
     "@angular/platform-browser-dynamic": "~13.3.0",
     "@angular/router": "~13.3.0",
+    "@ng-bootstrap/ng-bootstrap": "^12.0.1",
+    "bootstrap": "^4.4.0",
+    "dayjs": "^1.8.28",
+    "font-awesome": "^4.7.0",
+    "github-fork-ribbon-css": "^0.2.3",
+    "linq": "3.2.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
