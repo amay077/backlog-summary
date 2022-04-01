@@ -25,19 +25,21 @@
         <thead class="thead-dark">
           <tr>
             <th style="text-align: right;">#</th>
-            <th style="width: 200px;">マージ日時</th>
-            <th>リポジトリ</th>
-            <th>タイトル</th>
-            <th>PR者</th>
+            <th style="width: 200px;">更新日時</th>
+            <th>プロジェクト</th>
+            <th>種類</th>
+            <th>課題</th>
+            <th>詳細</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of displayItems; let i = index;">
             <td style="text-align: right;">{{i + 1}}</td>
-            <td>{{formatDate(item.updated_at)}}</td>
-            <td><a target="_blank" [href]="item.team_url">{{item.team}}</a>&nbsp;(<i class="fa fa-star"></i>:{{item.stars}})</td>
-            <td><a target="_blank" [href]="item.url">#{{item.number}} {{item.title}}</a></td>
-            <td><a target="_blank" [href]="item.user_url">{{item.user_id}}</a></td>
+            <td><a target="_blank" [href]="item.url">{{formatDate(item.updated_at)}}</a></td>
+            <td>{{item.team}}</td>
+            <td>{{item.team_url}}</td>
+            <td>{{item.title}}</td>
+            <td>{{item.user_id}}</td>
           </tr>
         </tbody>
       </table>
