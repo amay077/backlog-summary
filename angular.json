@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "nippou": {
+    "jamstack-sample-angular-node-spa": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/nippou",
+            "outputPath": "dist/jamstack-sample-angular-node-spa",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -75,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "nippou:build:production"
+              "browserTarget": "jamstack-sample-angular-node-spa:build:production"
             },
             "development": {
-              "browserTarget": "nippou:build:development"
+              "browserTarget": "jamstack-sample-angular-node-spa:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "nippou:build"
+            "browserTarget": "jamstack-sample-angular-node-spa:build"
           }
         },
         "test": {
@@ -110,5 +110,5 @@
       }
     }
   },
-  "defaultProject": "nippou"
+  "defaultProject": "jamstack-sample-angular-node-spa"
 }
