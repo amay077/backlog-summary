@@ -3,9 +3,9 @@ name: PUBLISH TO GITHUB PAGES
 on:
   push:
     branches:
-      - development
-  schedule :
-    - cron : '0 18 * * *' #UTC
+      - main
+#  schedule :
+#    - cron : '0 18 * * *' #UTC
 #    - cron : '0 3 * * *' JST
 
 defaults:
