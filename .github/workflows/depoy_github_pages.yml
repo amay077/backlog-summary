@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
     steps:      
       - run: echo "全てのブランチを clone"
       - uses: actions/checkout@v2
@@ -26,7 +26,7 @@ jobs:
       - name: publish-site
         uses: actions/setup-node@v1
         with:
-          node-version: v12.14.1
+          node-version: v14.15
       - run: echo "SPA を生成"
       - run: npm ci
         working-directory: ./spa
