@@ -1,0 +1,65 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h2 class="display-5">Backlog の活動を日付ごとにまとめるサイト</h2>
+  </div>
+</div>
+
+<div class="container">
+  <div *ngIf="error != ''" class="row">
+    <div class="col-12 mb-4">
+      <span class="text-danger">{{error}}</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th style="text-align: right;">#</th>
+            <th>日付</th>
+            <th>活動</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ymdProjActivities; let i = index;">
+            <td style="text-align: right;">{{i + 1}}</td>
+            <td class="d-flex flex-column">
+              <span>{{item.ymd}}</span>
+              <span></span>
+              <span>{{toHHMMSS(item.updateAtMin)}}〜{{toHHMMSS(item.updateAtMax)}}</span>
+            </td>
+            <td>
+              <ul>
+                <ng-container *ngFor="let proj of item.projActivities">
+                  <li>{{proj.proj}} ({{proj.activities.length}}件)</li>
+                    <ng-container *ngFor="let a of proj.activities">
+                        <div class="container-fluid">
+                          <div class="row">
+                            <span class="col-1"><a target="_blank" [href]="a.activity_url">{{toHHMMSS(a.updated_at)}}</a></span>
+                            <span class="col-11">{{a.title}}</span>
+                          </div>
+                          <div class="row">
+                            <span class="col-1"></span>
+                            <div class="col-11"><span class="" style="font-style: italic; color: grey; font-size: 0.9rem;">{{a.detail}}</span></div>
+                          </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4 mb-4"></div>
+    <div class="col-4 mb-4">
+      <button type="button" class="btn btn-primary btn-block" (click)="loadMore()">さらに読み込む</button>
+    </div>
+    <div class="col-4 mb-4"></div>
+  </div>
+
+</div>
+
