@@ -1,2 +1,0 @@
-# jamstack-sample-angular-node
-
