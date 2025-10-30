@@ -2,8 +2,11 @@
   "name": "backlog-monthly-report",
   "version": "0.0.1",
   "description": "Backlog 月次報告書生成スクリプト",
+  "main": "src/index.ts",
   "scripts": {
-    "generate-report": "tsx scripts/generate-monthly-report.ts"
+    "start": "tsx src/index.ts",
+    "gen-report": "tsx src/index.ts",
+    "generate-report": "tsx src/index.ts"
   },
   "engines": {
     "node": ">=18.0.0"

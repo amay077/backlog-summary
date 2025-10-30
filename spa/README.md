@@ -32,14 +32,23 @@ BACKLOG_API_KEY=your-api-key    # 個人設定 > API から取得
 
 ## 使用方法
 
+### 基本的な使い方
+
 ```bash
+# 最短コマンド（npm start）
+npm start -- --month 2025-10
+
+# 短縮コマンド（推奨）
+npm run gen-report -- --month 2025-10
+
+# フルコマンド（互換性のため残されています）
 npm run generate-report -- --month 2025-10
 ```
 
-または環境変数で直接指定：
+環境変数で直接指定する場合：
 
 ```bash
-BACKLOG_SPACE_ID=nepula BACKLOG_API_KEY=YOUR_API_KEY npm run generate-report -- --month 2025-10
+BACKLOG_SPACE_ID=nepula BACKLOG_API_KEY=YOUR_API_KEY npm start -- --month 2025-10
 ```
 
 ### オプション
@@ -49,7 +58,7 @@ BACKLOG_SPACE_ID=nepula BACKLOG_API_KEY=YOUR_API_KEY npm run generate-report -- 
 
 ```bash
 # UTF-8 で出力
-npm run generate-report -- --month 2025-10 --encoding utf-8
+npm run gen-report -- --month 2025-10 --encoding utf-8
 ```
 
 ## 出力ファイル
@@ -132,7 +141,7 @@ npx tsc
 ### スクリプトの直接実行（開発時）
 
 ```bash
-npx tsx scripts/generate-monthly-report.ts --month 2025-10
+npx tsx src/index.ts --month 2025-10
 ```
 
 ## ライセンス
