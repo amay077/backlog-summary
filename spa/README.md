@@ -1,158 +1,36 @@
-# Backlog Summary SPA
+# Backlog Monthly Report
 
-Backlog のアクティビティを日付とプロジェクトごとにグルーピングして表示する Angular 13 ベースのシングルページアプリケーション（SPA）です。
+Backlog のアクティビティを月単位で集計し、CSV 形式で出力する Node.js スクリプトです。
 
-## プロジェクト概要
+## 必要要件
 
-このアプリケーションは Backlog API から直接ユーザーのアクティビティデータを取得し、見やすくサマリー表示します。バックエンドを持たない純粋なクライアントサイド SPA として動作します。
+- **Node.js**: 18.0.0 以上（推奨: 22.x LTS）
+- **Backlog API キー**: 個人設定 > API から取得
 
-## 使い方
+## セットアップ
 
-アプリケーションにアクセスする際は、以下のように URL パラメータで Backlog のドメインと API キーを指定します：
-
-```
-https://<host>/#/?domain=<your-company-backlog-domain>&apikey=<your-backlog-api-key>
-```
-
-## 開発環境
-
-このプロジェクトは [Angular CLI](https://github.com/angular/angular-cli) version 13.3.1 で構築されています。
-
-### 開発サーバーの起動
+### 1. 依存関係のインストール
 
 ```bash
-npm start
-# または
-ng serve
+npm install
 ```
 
-開発サーバーが起動したら `http://localhost:4200/` にアクセスしてください。ソースファイルを変更すると自動的にリロードされます。
+### 2. 環境変数の設定
 
-### ビルド
-
-#### 開発ビルド
-```bash
-npm run build
-```
-- 出力先：`dist/prod` ディレクトリ
-- 相対パス対応（`--base-href=./`）
-
-#### 本番ビルド
-```bash
-npm run build-prod
-```
-- 最適化された本番用バンドル
-- 出力先：`dist/prod` ディレクトリ
-
-#### ウォッチモード
-```bash
-npm run watch
-```
-ファイル変更時に自動的に再ビルドされます。
-
-### テストの実行
-
-```bash
-npm test
-# または
-ng test
-```
-
-[Karma](https://karma-runner.github.io) + Jasmine でユニットテストを実行します。
-
-#### 特定のテストファイルのみ実行
-```bash
-ng test --include='**/specific.component.spec.ts'
-```
-
-### コード生成
-
-```bash
-# コンポーネント生成
-ng generate component component-name
-
-# その他のスキーマティック
-ng generate directive|pipe|service|class|guard|interface|enum|module
-```
-
-## アーキテクチャ
-
-### アプリケーション構造
-
-- **シングルルートアプリケーション**：ハッシュベースルーティング（`useHash: true`）を使用し、静的ホスティングに対応
-- **MainComponent**：すべての Backlog API 連携とデータ表示を担当するコアコンポーネント
-- **バックエンド不要**：Backlog API と直接通信する純粋なクライアントサイド SPA
-
-### データフロー
-
-1. コンポーネント初期化時に URL のクエリパラメータ（`domain` と `apikey`）を取得
-2. Backlog API の `/users/myself` エンドポイントでユーザー認証を検証
-3. `/users/{userId}/activities` エンドポイントからアクティビティをページネーション付きで取得
-4. LINQ.js を使用して生データを日付とプロジェクトごとにグルーピング・変換
-5. テンプレートでレンダリング（「さらに読み込む」によるページネーション対応）
-
-### 主要な依存ライブラリ
-
-- **LINQ.js** (`linq`)：データのグルーピングと変換操作に広く使用
-- **dayjs**：日付・時刻の操作とフォーマット
-- **ng-bootstrap**：UI コンポーネント（Bootstrap 4 統合）
-- **ハッシュベースルーティング**：静的ホスティング互換性のために有効化
-
-### 対応するアクティビティタイプ
-
-アプリケーションは以下の Backlog アクティビティタイプを処理します：
-
-- Type 1：課題追加
-- Type 2：課題更新
-- Type 3：課題コメント追加
-- Type 14：課題の一括更新（個別のコメントに分解して処理）
-- Type 5：Wiki ページ追加
-- Type 6：Wiki ページ更新
-- Type 12：Git push
-- Type 13：Git リポジトリ作成
-
-Type 14（一括更新）は特別に処理され、リンクされた各課題に対する個別の Type 3 アクティビティに分解されます。
-
-## TypeScript 設定
-
-- **strict モード有効**：すべての厳格な TypeScript チェックが有効
-- **ターゲット**：ES2017（ES2020 モジュール使用）
-- **スタイル**：コンポーネントスタイルは SCSS
-- **デコレーター**：Angular 用に experimental decorators を有効化
-
-## ビルド出力
-
-- デフォルト出力パス：`dist/prod`
-- バンドルサイズの予算が設定されています：
-  - 初期バンドル：500KB で警告、1MB でエラー
-  - コンポーネントスタイル：2KB で警告、4KB でエラー
-
-## 注意事項
-
-- API 認証情報は URL クエリパラメータ経由で渡されます（domain と apiKey）
-- すべての Backlog URL が現在 `nepula.backlog.com` ドメインにハードコードされています（main.component.ts の 142、146、151 行目など）
-- ルーターは `shouldReuseRoute: false` に設定されており、ナビゲーション時にコンポーネントの再初期化が強制されます
-
-## 月次報告書の生成
-
-月々の Backlog アクティビティを集計して、CSV 形式の月次報告書を生成できます。
-
-### セットアップ
-
-1. `.env` ファイルを作成し、Backlog 認証情報を設定します：
+`.env` ファイルを作成し、Backlog 認証情報を設定します：
 
 ```bash
 cp .env.example .env
 ```
 
-2. `.env` ファイルを編集：
+`.env` ファイルを編集：
 
 ```bash
 BACKLOG_SPACE_ID=your-space-id  # 例：nepula の場合、https://nepula.backlog.com
 BACKLOG_API_KEY=your-api-key    # 個人設定 > API から取得
 ```
 
-### 使用方法
+## 使用方法
 
 ```bash
 npm run generate-report -- --month 2025-10
@@ -164,11 +42,21 @@ npm run generate-report -- --month 2025-10
 BACKLOG_SPACE_ID=nepula BACKLOG_API_KEY=YOUR_API_KEY npm run generate-report -- --month 2025-10
 ```
 
-### 出力ファイル
+### オプション
+
+- `--month <YYYY-MM>`: 対象月（必須）
+- `--encoding <shift-jis|utf-8>`: CSV ファイルのエンコーディング（デフォルト: shift-jis）
+
+```bash
+# UTF-8 で出力
+npm run generate-report -- --month 2025-10 --encoding utf-8
+```
+
+## 出力ファイル
 
 スクリプトは `reports/` ディレクトリに2種類の CSV ファイルを生成します：
 
-#### 1. 明細 CSV (`reports/{YYYY-MM}-report-detail.csv`)
+### 1. 明細 CSV (`reports/{YYYY-MM}-report-detail.csv`)
 
 全アクティビティの詳細情報を1行ずつ出力します。
 
@@ -179,15 +67,18 @@ BACKLOG_SPACE_ID=nepula BACKLOG_API_KEY=YOUR_API_KEY npm run generate-report -- 
 - アクティビティ種類（課題追加、課題更新、コメント、Wiki 追加/更新、Git push など）
 - タイトル/概要（課題タイトル、Wiki 名、コミットメッセージなど）
 
-#### 2. サマリ CSV (`reports/{YYYY-MM}-report-summary.csv`)
+### 2. サマリ CSV (`reports/{YYYY-MM}-report-summary.csv`)
 
 日付とプロジェクトキーごとにアクティビティを集計します。
 
 **カラム構成：**
 - 日付（YYYY-MM-DD）
-- 開始時刻（HH:mm）：その業務日のすべてのアクティビティの最小日時
-- 終了時刻（HH:mm）：その業務日のすべてのアクティビティの最大日時
-- 各プロジェクトキーごとに3列：
+- 開始時刻（HH:mm）：原則 9:00、最小日時が 13:00 以降なら 13:00（午前半休と推測）
+- 終了時刻（HH:mm）：最大日時を30分刻みで丸め、15:00以降の場合は1時間減算（家事休憩を再現）
+- 稼動時間：勤務開始〜勤務終了の労働時間から休憩時間を引いた値（小数、例：8.5）
+- プロジェクト別稼動時間列：プロジェクトキーごとに1列
+  - 稼動時間を各プロジェクトの件数で按分（0.5刻み、最小単位0.5）
+- プロジェクト別統計列：プロジェクトキーごとに3列
   - `{プロジェクトキー}_件数`：アクティビティ件数
   - `{プロジェクトキー}_最小日時`：最初のアクティビティの日時
   - `{プロジェクトキー}_最大日時`：最後のアクティビティの日時
@@ -196,12 +87,54 @@ BACKLOG_SPACE_ID=nepula BACKLOG_API_KEY=YOUR_API_KEY npm run generate-report -- 
 - AM6:00〜翌日の AM5:59:59 を1業務日として扱います
 - AM6:00 前のアクティビティは前日の業務日として集計されます
 
+**稼動時間の計算：**
+- Google Spreadsheet の休憩時間ロジックを実装
+- 朝休憩・午後休憩・深夜休憩コードに基づく休憩時間算出
+- 15:00以降の終了時刻から1時間減算（家事休憩）
+- 深夜残業対応（24時間超表記：例 午前2:00 → 26:00）
+
 **例：**
 ```
-日付,開始時刻,終了時刻,BLS_件数,BLS_最小日時,BLS_最大日時,SDBT_件数,SDBT_最小日時,SDBT_最大日時
-2025-10-15,08:30,18:20,5,2025/10/15 08:30:00,2025/10/15 18:20:00,12,2025/10/15 09:15:00,2025/10/15 17:45:00
+日付,開始時刻,終了時刻,稼動時間,BLS,SDBT,BLS_件数,BLS_最小日時,BLS_最大日時,SDBT_件数,SDBT_最小日時,SDBT_最大日時
+2025-10-15,9:00,17:00,8,3.5,4.5,5,2025/10/15 08:30:00,2025/10/15 18:20:00,12,2025/10/15 09:15:00,2025/10/15 17:45:00
 ```
 
-## ヘルプ
+## 対応するアクティビティタイプ
 
-Angular CLI の詳細については `ng help` を実行するか、[Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md) を参照してください。
+- Type 1：課題追加
+- Type 2：課題更新
+- Type 3：課題コメント追加
+- Type 14：課題の一括更新（個別のコメントに分解して処理）
+- Type 5：Wiki ページ追加
+- Type 6：Wiki ページ更新
+- Type 12：Git push
+- Type 13：Git リポジトリ作成
+
+## 技術スタック
+
+- **TypeScript 5.7**: 最新の TypeScript で実装
+- **tsx**: TypeScript 実行環境
+- **Backlog API v2**: 公式 REST API を使用
+- **csv-writer**: CSV ファイル生成
+- **commander**: CLI 引数パース
+- **dayjs**: 日付操作
+- **dotenv**: 環境変数管理
+- **iconv-lite**: エンコーディング変換（UTF-8 ⇔ Shift-JIS）
+
+## 開発
+
+### TypeScript のビルド
+
+```bash
+npx tsc
+```
+
+### スクリプトの直接実行（開発時）
+
+```bash
+npx tsx scripts/generate-monthly-report.ts --month 2025-10
+```
+
+## ライセンス
+
+Private
